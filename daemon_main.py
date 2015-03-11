@@ -86,7 +86,11 @@ def collector_fn():
 
 
 
-def daemon_main():
+def daemon_main(plim_id = None):
+	if plim_id != None:
+		plimmer_id = plim_id
+		
+
 	retCode = createDaemon()
 
         cookies = cookielib.LWPCookieJar()
@@ -108,12 +112,14 @@ def daemon_main():
 
         try:
                 thread1 = Thread(target=websocket_client.main_thread, args=(session_cookies, plimmer_id, ws_url, server_post_url,) )
-                thread2 = Thread(target=collector_fn)
+                thread2 = Thread(target=collector.main_thread, args=(session_cookies, plimmer_id, database, update_url,) )
 
                 thread1.start()
-                #thread2.start()
+                thread2.start()
                 
                 thread1.join()
+                # We don't wait on collector thread. If websocket thread fails, daemon has to be
+                # restarted. Hence wait on collector is not required.
                 #thread2.join()
         except Exception as e:
                 print "EXCEPTION ON DAEMON", e

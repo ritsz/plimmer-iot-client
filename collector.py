@@ -22,7 +22,7 @@ def bridge_client():
 		stat3 = value.get('stato3').split('/')
 		stat3[-1] = stat3[-1].replace('|', '')
 	except:
-		pass
+		raise
 	
 	bridge_dict = dict()
 	bridge_dict['status'] = stat1[9]
@@ -45,8 +45,6 @@ def sql_client(database='/www/user/data.db'):
 	conn = sql.connect(database)
 	conn.text_factory = str
 	cursor = conn.cursor()
-	for i in conn.iterdump():
-		print str(i)
 	sql_dict = dict()
 	
 		
@@ -70,8 +68,11 @@ def diff_dict(old_dict, new_dict):
 	
 	retdict = dict()
 	for key in old_dict.viewkeys():
-		if old_dict[key] != new_dict[key]:
-			retdict[key] = new_dict[key]		
+		if key == 'plimmer_id':
+			retdict['plimmer_id'] = old_dict['plimmer_id']
+		else:
+			if old_dict[key] != new_dict[key]:
+				retdict[key] = new_dict[key]		
 	
 	return retdict
 
@@ -81,14 +82,13 @@ def main_thread(cookies, plimmer_id, database, update_url):
 	cookies_dict = {cookies.name:cookies.value}
 	old_dict = dict()
 	
-	print "COLLECTOR"
-	
 	while 1:
 		try:
 			bridge_dict = bridge_client()
 			sql_dict = sql_client(database)
 			
 			update_dict = dict()
+			update_dict['plimmer_id'] = plimmer_id
 			update_dict['phase'] = bridge_dict['current_phase']
 			update_dict['flow'] = bridge_dict['flusso']
 			update_dict['pressure'] = bridge_dict['pressione']
@@ -101,15 +101,14 @@ def main_thread(cookies, plimmer_id, database, update_url):
 			update_dict['water_hardness'] = sql_dict['water_hardness']
 			
 			post_dict = diff_dict(old_dict, update_dict)
-			post_dict['plimmer_id'] = plimmer_id
 			old_dict = update_dict
 			print post_dict
-			server_post = requests.post(update_url, cookies = cookies_dict, data=post_dict)
+			server_post = requests.post(update_url, cookies = cookies_dict, data=update_dict)
 			print server_post.text
 				
 			time.sleep(10)
 		except:
-			pass
+			raise
 
 			
 			
