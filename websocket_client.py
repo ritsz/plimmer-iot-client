@@ -23,11 +23,12 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 			command = ws.recv()
 			command_dict = json.loads(command)
 			page = command_dict['requested.page']
+			print command_dict
 			print local_server+page
 			
 			
 			if command_dict['request.method'] == 'GET':
-				status = requests.get(local_server+page)
+				status = requests.get(local_server+page, params=command_dict['request.GET'])
 				fd = open(status_file, 'w')
 				fd.write(status.text)
 				fd.close() 
