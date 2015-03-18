@@ -115,7 +115,7 @@ def daemon_main(plim_id = None):
                 thread2 = Thread(target=collector.main_thread, args=(session_cookies, plimmer_id, database, update_url,) )
 
                 thread1.start()
-                thread2.start()
+                #thread2.start()
                 
                 thread1.join()
                 # We don't wait on collector thread. If websocket thread fails, daemon has to be

@@ -2,6 +2,14 @@
 
 import daemon_main
 import sys
+import os
+
+cookie_file = '/mnt/sda1/plimmer_client/kennethreitz-requests-14b653a/cookie.txt'
+try:
+	print "Delete cookie file"
+	os.remove(cookie_file)
+except:
+	pass
 
 
 while 1:
@@ -19,5 +27,5 @@ while 1:
 		print "Exception caught, Restarting for ", plimmer_id
 		pass
 	else:
-		print "Exitinf the process_manager"
+		print "Exiting the process_manager"
 		break
