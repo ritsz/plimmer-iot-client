@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+import sys
+sys.path.append('/mnt/sda1/libraries/requests')
+sys.path.append('/mnt/sda1/libraries/websocket')
 import websocket
 import json 
 import requests
@@ -61,5 +64,3 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 		except UnicodeEncodeError:
 			print "Unicode exception"
 			pass
-			 
-			 

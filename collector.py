@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 
 import sys
+sys.path.append('/mnt/sda1/libraries/requests')
+sys.path.append('/mnt/sda1/libraries/websocket')
+
 import sqlite3 as sql
 import requests
 import time
