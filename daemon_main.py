@@ -7,15 +7,15 @@ from threading import Thread
 import websocket_client
 import cookielib
 import urllib2
-import collector
+#import collector
 
 
-aws_url = "http://ec2-54-152-112-119.compute-1.amazonaws.com/"
+aws_url = "http://ec2-52-74-92-28.ap-southeast-1.compute.amazonaws.com/"
 plimmer_id = "1234"
 session_save_url = aws_url+"sessionsave/"+plimmer_id
 update_url = aws_url+"update"
 server_post_url = aws_url+"tunnelresponse"
-ws_url = "ws://ec2-54-152-112-119.compute-1.amazonaws.com/ws/foobar?subscribe-session"
+ws_url = "ws://ec2-52-74-92-28.ap-southeast-1.compute.amazonaws.com/ws/foobar?subscribe-session/"
 session_cookies = ""
 database = "/www/user/data.db"
 
@@ -81,9 +81,6 @@ def websocket_fn():
 
 
 
-def collector_fn():
-	collector.main_thread(session_cookies, plimmer_id, database, update_url)	
-
 
 
 def daemon_main(plim_id = None):
@@ -112,7 +109,7 @@ def daemon_main(plim_id = None):
 
         try:
                 thread1 = Thread(target=websocket_client.main_thread, args=(session_cookies, plimmer_id, ws_url, server_post_url,) )
-                thread2 = Thread(target=collector.main_thread, args=(session_cookies, plimmer_id, database, update_url,) )
+                #thread2 = Thread(target=collector.main_thread, args=(session_cookies, plimmer_id, database, update_url,) )
 
                 thread1.start()
                 #thread2.start()

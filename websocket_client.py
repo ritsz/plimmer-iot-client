@@ -6,12 +6,51 @@ sys.path.append('/mnt/sda1/libraries/websocket')
 import websocket
 import json 
 import requests
-import collector
 import os.path
 
 local_server = 'http://127.0.0.1/'
-status_file = '/mnt/sda1/plimmer_client/kennethreitz-requests-14b653a/status.txt'
-cookie_file = '/mnt/sda1/plimmer_client/kennethreitz-requests-14b653a/cookie.txt'
+status_file = '/mnt/sda1/libraries/requests/status.txt'
+html_file  = '/mnt/sda1/libraries/html_parsed.txt'
+cookie_file = '/mnt/sda1/libraries/cookie.txt'
+
+
+def parse_response_file(local_file_obj, response_file_obj, r_plimmer_id):
+	content_found = False
+	for line in response_file_obj.__iter__():
+		if not content_found:
+			linkhref = line.find('href=')
+			if linkhref!=-1:
+				src_beg = line[linkhref:].find('"') + 1 + linkhref
+				new_line = line[0:linkhref] + 'href="/tunnel/%s/' %(r_plimmer_id) + line[src_beg:].strip('/')
+				local_file_obj.write(new_line)
+			elif line.find('<div class="header">')!=-1 or line.find('<div class="content">')!=-1:
+				content_found = True
+				local_file_obj.write(line)
+			else:
+				pass
+			continue
+		if line.find('</body>')!=-1:
+			break
+		new_line = line
+		imgsrc = line.find('src=')
+		if imgsrc!=-1:
+			src_beg = new_line[imgsrc:].find('"') + 1 + imgsrc
+			new_line = new_line[0:imgsrc] + 'src="http://aquasphere.s3.amazonaws.com/admin/' + new_line[src_beg:].strip('/')
+		linkhref = new_line.find('href=')
+		if linkhref!=-1:
+			src_beg = new_line[linkhref:].find('"') + 1 + linkhref
+			new_line = new_line[0:linkhref] + 'href="/tunnel/%s/user/' %(r_plimmer_id) + new_line[src_beg:].strip('/')
+		action = new_line.find('action=')
+		if action!=-1:
+			src_beg = new_line[action:].find('"') + 1 + action
+			new_line = new_line[0:action] + 'action="/tunnel/%s/user/' %(r_plimmer_id) + new_line[src_beg:].strip('/')
+		local_file_obj.write(new_line)
+	return local_file_obj
+
+
+
+
+
 
 def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 	
@@ -37,10 +76,16 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 				status = requests.get(local_server+page, cookies=local_cookie, params=command_dict['request.GET'])
 				fd = open(status_file, 'w')
 				fd.write(status.text)
+				fd.close()
+				#Adding the html parsing code here
+				fd = open(status_file, 'r')				
+				send_fd = open(html_file, 'w')
+				parse_response_file(send_fd, fd, plimmer_id)
+				send_fd.close()
 				fd.close() 
 				
 				response_data = {'plimmer_id':plimmer_id}
-				response_files = {'response_file': open(status_file, 'r')}
+				response_files = {'response_file': open(html_file, 'r')}
 				server_post = requests.post(server_post_url, cookies=cookies_dict, files=response_files, data=response_data)
 			
 			
@@ -56,9 +101,15 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 				fd = open(status_file, 'w')
 				fd.write(str(res_post.text))
 				fd.close()
+				#Adding the html parsing code here
+				fd = open(status_file, 'r')
+				send_fd = open(html_file, 'w')
+				parse_response_file(send_fd, fd, plimmer_id)
+				send_fd.close()
+				fd.close()
 				
 				response_data = {'plimmer_id':plimmer_id}
-				response_files = {'response_file': open(status_file, 'r')}
+				response_files = {'response_file': open(html_file, 'r')}
 				server_post = requests.post(server_post_url, cookies=cookies_dict, files=response_files, data=response_data)
 			
 		except UnicodeEncodeError:

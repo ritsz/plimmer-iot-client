@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import sys
+import sys
 sys.path.append('/mnt/sda1/libraries/requests')
 sys.path.append('/mnt/sda1/libraries/websocket')
 
@@ -120,4 +121,4 @@ def main_thread(cookies, plimmer_id, database, update_url):
 	
 if __name__ == "__main__":
 	print bridge_client()
-	print sql_client() 
+	print sql_client()

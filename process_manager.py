@@ -4,7 +4,7 @@ import daemon_main
 import sys
 import os
 
-cookie_file = '/mnt/sda1/plimmer_client/kennethreitz-requests-14b653a/cookie.txt'
+cookie_file = '/mnt/sda1/libraries/cookie.txt'
 try:
 	print "Delete cookie file"
 	os.remove(cookie_file)
