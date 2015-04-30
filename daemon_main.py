@@ -10,12 +10,12 @@ import urllib2
 #import collector
 
 
-aws_url = "http://ec2-52-74-92-28.ap-southeast-1.compute.amazonaws.com/"
-plimmer_id = "1234"
+aws_url = "http://52.74.92.28/"
+plimmer_id = "Plimmer-2014100003"
 session_save_url = aws_url+"sessionsave/"+plimmer_id
 update_url = aws_url+"update"
 server_post_url = aws_url+"tunnelresponse"
-ws_url = "ws://ec2-52-74-92-28.ap-southeast-1.compute.amazonaws.com/ws/foobar?subscribe-session/"
+ws_url = "ws://52.74.92.28/ws/foobar?subscribe-session"
 session_cookies = ""
 database = "/www/user/data.db"
 

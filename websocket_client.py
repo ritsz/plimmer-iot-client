@@ -9,7 +9,7 @@ import requests
 import os.path
 
 local_server = 'http://127.0.0.1/'
-status_file = '/mnt/sda1/libraries/requests/status.txt'
+status_file = '/mnt/sda1/libraries/status.txt'
 html_file  = '/mnt/sda1/libraries/html_parsed.txt'
 cookie_file = '/mnt/sda1/libraries/cookie.txt'
 
@@ -55,9 +55,11 @@ def parse_response_file(local_file_obj, response_file_obj, r_plimmer_id):
 def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 	
 	cookies_dict = {cookies.name:cookies.value}
-	ws = websocket.WebSocket()
-	ws.connect(ws_url, cookie=cookies)
-	
+	ws = websocket.create_connection(ws_url, cookie=cookies)
+	if ws.connected:
+		print "WE ARE CONNECTED TO THE WEBSOCKET for", plimmer_id
+	else:
+		print "NOT CONNECTED TO WEBSOCKET"
 	
 	while 1:
 		try:
@@ -74,6 +76,7 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 			
 			if command_dict['request.method'] == 'GET':
 				status = requests.get(local_server+page, cookies=local_cookie, params=command_dict['request.GET'])
+				print status.text
 				fd = open(status_file, 'w')
 				fd.write(status.text)
 				fd.close()
@@ -99,6 +102,7 @@ def main_thread(cookies, plimmer_id, ws_url, server_post_url):
 					res_post = requests.post(local_server+page, cookies=local_cookie, params=payload)
 				
 				fd = open(status_file, 'w')
+				print res_post.text
 				fd.write(str(res_post.text))
 				fd.close()
 				#Adding the html parsing code here
