@@ -19,14 +19,6 @@ mv /mnt/sda1/libraries/web* /mnt/sda1/libraries/websocket
 cp *.py /mnt/sda1/libraries/
 
 
-# Deleting last exit 0
-head -n -1 /etc/rc.local > temp.txt 
-mv temp.txt /etc/rc.local
-
-echo "python /mnt/sda1/libraries/process_manager.py $1" >> /etc/rc.local
-echo "exit 0" >> /etc/rc.local
-
-
 echo "**************************"
 echo "PLEASE RESTART THE PLIMMER"
 echo "**************************"
