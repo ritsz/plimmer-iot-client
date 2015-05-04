@@ -2,9 +2,7 @@ Client side backend of the plimmer project.
 
 program_manager.py - 	program manager script that catches all exceptions and restarts the daemon
 
-daemon_main.py - 	creates a daemon, makes 2 threads. One for updating server and the other for websocket
-			
-collector.py - 		Accesses the sqlite3 database, creates an update dictionary and POST request to server
+daemon_main.py - 	creates a daemon, makes 1 thread for websocket
 
 websocket.py - 		Websockets with server to receive GET/POST jsons from server. POST responses back to server
 
