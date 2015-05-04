@@ -7,8 +7,6 @@ from threading import Thread
 import websocket_client
 import cookielib
 import urllib2
-#import collector
-
 
 aws_url = "http://52.74.92.28/"
 plimmer_id = "Plimmer-2014100003"
@@ -17,7 +15,6 @@ update_url = aws_url+"update"
 server_post_url = aws_url+"tunnelresponse"
 ws_url = "ws://52.74.92.28/ws/foobar?subscribe-session"
 session_cookies = ""
-database = "/www/user/data.db"
 
 
 
@@ -109,15 +106,11 @@ def daemon_main(plim_id = None):
 
         try:
                 thread1 = Thread(target=websocket_client.main_thread, args=(session_cookies, plimmer_id, ws_url, server_post_url,) )
-                #thread2 = Thread(target=collector.main_thread, args=(session_cookies, plimmer_id, database, update_url,) )
-
+                
                 thread1.start()
-                #thread2.start()
                 
                 thread1.join()
-                # We don't wait on collector thread. If websocket thread fails, daemon has to be
-                # restarted. Hence wait on collector is not required.
-                #thread2.join()
+                
         except Exception as e:
                 print "EXCEPTION ON DAEMON", e
                 raise
